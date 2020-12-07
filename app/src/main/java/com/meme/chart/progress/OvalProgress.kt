@@ -81,7 +81,12 @@ class OvalProgress @JvmOverloads constructor(
             }
             field = newValue
         }
+
+    /*** 是否允许进行动画 ***/
     var enableAnim = false
+
+    /*** 动画时长 ***/
+    var duration: Long = 500L
 
     private var progressPercent = progress
         set(value) {
@@ -91,7 +96,7 @@ class OvalProgress @JvmOverloads constructor(
 
     private fun getProgressAnim(start: Int, end: Int): ObjectAnimator {
         return ObjectAnimator.ofInt(this, "progressPercent", start, end)
-            .apply { duration = 500 }
+            .apply { duration = this@OvalProgress.duration }
     }
 
 

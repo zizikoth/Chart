@@ -80,6 +80,9 @@ class NumberProgress @JvmOverloads constructor(
             field = newValue
         }
 
+    /*** 动画时长 ***/
+    var duration: Long = 500L
+
     /*** 显示的进度百分比 ***/
     private var progressPercent = progress
         set(value) {
@@ -91,9 +94,8 @@ class NumberProgress @JvmOverloads constructor(
      * 获取进度动画
      */
     private fun getProgressAnim(start: Int, end: Int): ObjectAnimator {
-        return ObjectAnimator.ofInt(this, "progressPercent", start, end).apply {
-            duration = 500
-        }
+        return ObjectAnimator.ofInt(this, "progressPercent", start, end)
+            .apply { duration = this@NumberProgress.duration }
     }
 
 
@@ -115,7 +117,8 @@ class NumberProgress @JvmOverloads constructor(
 
         val text = "$progressPercent%"
         mPaint.getTextBounds(text, 0, text.length, textBound)
-        val lineWidth = measuredWidth - textBound.width() - padding * 2
+        // 减去-文字宽度-文字边距*2-画笔宽度一半*2
+        val lineWidth = measuredWidth - textBound.width() - padding * 2 - lineHeight
         val leftWidth = lineWidth * (progressPercent / 100f)
         val rightWidth = lineWidth - leftWidth
         val lineY = measuredHeight / 2f
@@ -124,10 +127,10 @@ class NumberProgress @JvmOverloads constructor(
         mPaint.strokeWidth = lineHeight
         mPaint.color = lineColor
         if (progressPercent != 0) {
-            canvas.drawLine(padding, lineY, leftWidth, lineY, mPaint)
+            canvas.drawLine(lineHeight / 2f, lineY, leftWidth, lineY, mPaint)
         }
         if (progressPercent != 100) {
-            canvas.drawLine(measuredWidth - rightWidth, lineY, measuredWidth - padding, lineY, mPaint)
+            canvas.drawLine(measuredWidth - rightWidth, lineY, measuredWidth - lineHeight / 2f, lineY, mPaint)
         }
 
         // 绘制进度
