@@ -73,15 +73,13 @@ class NumberProgress @JvmOverloads constructor(
         set(value) {
             val newValue = if (value < 0) 0 else if (value > 100) 100 else value
             if (enableAnim) {
-                getProgressAnim(field, newValue).start()
+                progressAnim.setIntValues(field,newValue)
+                progressAnim.start()
             } else {
                 progressPercent = newValue
             }
             field = newValue
         }
-
-    /*** 动画时长 ***/
-    var duration: Long = 500L
 
     /*** 显示的进度百分比 ***/
     private var progressPercent = progress
@@ -93,11 +91,7 @@ class NumberProgress @JvmOverloads constructor(
     /**
      * 获取进度动画
      */
-    private fun getProgressAnim(start: Int, end: Int): ObjectAnimator {
-        return ObjectAnimator.ofInt(this, "progressPercent", start, end)
-            .apply { duration = this@NumberProgress.duration }
-    }
-
+    private val progressAnim =  ObjectAnimator.ofInt(this, "progressPercent",0)
 
     private val mPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         strokeCap = Paint.Cap.ROUND

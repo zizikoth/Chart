@@ -26,7 +26,8 @@ class ProgressChart @JvmOverloads constructor(
     var progress: Float = if (isInEditMode) 0.5f else 0f
         set(value) {
             val newValue = if (value < 0) 0f else if (value > 1) 1f else value
-            getProgressAnim(field, newValue).start()
+            progressAnim.setFloatValues(field,newValue)
+            progressAnim.start()
             field = newValue
         }
 
@@ -82,7 +83,7 @@ class ProgressChart @JvmOverloads constructor(
         }
 
     /*** 百分比的临时变量 用于动画展示 ***/
-    private var progressTemp = progress
+    private var currentProgress = progress
         set(value) {
             field = value
             invalidate()
@@ -90,12 +91,8 @@ class ProgressChart @JvmOverloads constructor(
 
     /**
      * 创建一个动画
-     * @param start 开始
-     * @param end 结束
      */
-    private fun getProgressAnim(start: Float, end: Float): ObjectAnimator {
-        return ObjectAnimator.ofFloat(this, "progressTemp", start, end)
-    }
+    private val progressAnim =  ObjectAnimator.ofFloat(this, "currentProgress",0f)
 
     /*** 圆环的方形 ***/
     private val rect = RectF()
@@ -138,7 +135,7 @@ class ProgressChart @JvmOverloads constructor(
         canvas.drawArc(
             rect,
             -90f,
-            progressTemp * 360f,
+            currentProgress * 360f,
             false,
             mPaint
         )

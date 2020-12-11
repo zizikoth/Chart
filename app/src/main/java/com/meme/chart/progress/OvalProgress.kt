@@ -75,7 +75,8 @@ class OvalProgress @JvmOverloads constructor(
         set(value) {
             val newValue = if (value < 0) 0 else if (value > 100) 100 else value
             if (enableAnim) {
-                getProgressAnim(field, newValue).start()
+                progressAnim.setIntValues(field,newValue)
+                progressAnim.start()
             } else {
                 progressPercent = newValue
             }
@@ -85,20 +86,13 @@ class OvalProgress @JvmOverloads constructor(
     /*** 是否允许进行动画 ***/
     var enableAnim = false
 
-    /*** 动画时长 ***/
-    var duration: Long = 500L
-
     private var progressPercent = progress
         set(value) {
             field = value
             invalidate()
         }
 
-    private fun getProgressAnim(start: Int, end: Int): ObjectAnimator {
-        return ObjectAnimator.ofInt(this, "progressPercent", start, end)
-            .apply { duration = this@OvalProgress.duration }
-    }
-
+    private val progressAnim = ObjectAnimator.ofInt(this, "progressPercent",0)
 
     private val mPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textAlign = Paint.Align.RIGHT }
     private val bgBound = RectF()
